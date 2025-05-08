@@ -1,33 +1,8 @@
 """Module to hold every utility of the library."""
-
 from typing import List, Optional
-
 import serial
 from serial.tools.list_ports_common import ListPortInfo
-
-from iic2343.constants import (
-    BAUD_RATE,
-    BOTTOM_ADDRESS,
-    BYTE_SIZE,
-    PARITY,
-    RTS_CTS,
-    STOP_BITS,
-    TOP_ADDRESS,
-    WORD_LENGTH,
-    XON_XOFF,
-)
 from iic2343.errors import CannotOpenPortError, InvalidPortError, NoPortsPresentError
-
-
-def configure_port(port: serial.Serial) -> serial.Serial:
-    """Configures the required parameters of a port."""
-    port.baudrate = BAUD_RATE
-    port.bytesize = BYTE_SIZE
-    port.parity = PARITY
-    port.rtscts = RTS_CTS
-    port.stopbits = STOP_BITS
-    port.xonxoff = XON_XOFF
-    return port
 
 
 def open_port(port: serial.Serial) -> None:
@@ -63,20 +38,6 @@ def validate_port_selection(
             f"Invalid port number '{port_number}', {len(os_ports)} serial "
             "ports present, please select a valid one."
         )
-
-
-def can_be_written(port: serial.Serial, address: int, word: bytearray) -> bool:
-    """Checks if a word can be written on an address through a given port."""
-    if address < BOTTOM_ADDRESS:
-        return False
-    if address >= TOP_ADDRESS:
-        return False
-    if len(word) != WORD_LENGTH:
-        return False
-    if not port.is_open:
-        return False
-    return True
-
 
 def write_to_port(port: serial.Serial, address: int, word: bytearray) -> int:
     """

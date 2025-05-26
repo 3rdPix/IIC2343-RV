@@ -23,7 +23,7 @@ class Basys3:
     the Basys3 board.
     """
 
-    class PortConfigurations(IntEnum):
+    class PortConfigurations:
         """@private"""
         BAUD_RATE = 115200
         BYTE_SIZE = 8
@@ -31,7 +31,7 @@ class Basys3:
         XON_XOFF = 0
         RTS_CTS = 0
 
-    class Default(IntEnum):
+    class Default:
         """@private
         Preserved defaults to avoid breaking old proyects
         """
@@ -94,7 +94,6 @@ class Basys3:
     def begin(self, port_number: Optional[int] = None) -> None:
         """Configure and initialize the port to be used."""
         validate_port_selection(port_number, self.available_ports)
-        self.__port = configure_port(self.__port)
         self.__port.port = self.available_ports[port_number or 0].device
         open_port(self.__port)
 
@@ -105,7 +104,7 @@ class Basys3:
     def write(self, address: int, word: bytearray,
               custom_payload: PayloadBuilder=None) -> int:
         """Write to the initialized port."""
-        if not can_be_written(address, word):
+        if not self.can_be_written(address, word):
             return 0
         if custom_payload:
             return self.__port.write(custom_payload(address, word))

@@ -107,7 +107,7 @@ class Basys3:
         if not self.can_be_written(address, word):
             return 0
         if custom_payload:
-            return self.__port.write(custom_payload(address, word))
+            return self.__port.write(custom_payload(self.__port, address, word))
         return write_to_port(self.__port, address, word)
 
     def can_be_written(self, address: int, word: bytearray) -> bool:
